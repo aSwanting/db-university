@@ -32,8 +32,13 @@
    SELECT * FROM `degrees`
    WHERE level = 'magistrale';
    ```
-   7. Da quanti dipartimenti è composta l'università? (12)
-      ```MYSQL
-      SELECT COUNT(name)
-      FROM departments;
-      ```
+7. Da quanti dipartimenti è composta l'università? (12)
+   ```MYSQL
+   SELECT COUNT(name)
+   FROM departments;
+   ```
+8. Quanti sono gli insegnanti che non hanno un numero di telefono? (50)
+   ```MYSQL
+   SELECT count(*) FROM teachers
+   WHERE phone IS NULL;
+   ```
