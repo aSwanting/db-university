@@ -47,14 +47,14 @@
 ### Group
 1. Contare quanti iscritti ci sono stati ogni anno
    ```MYSQL
-   SELECT COUNT(`id`), `enrolment_date`
+   SELECT `enrolment_date`, COUNT(`id`)
    FROM `students`
    GROUP BY `enrolment_date`
    ORDER BY `enrolment_date` ASC;
    ```
 2. Contare gli insegnanti che hanno l'ufficio nello stesso edificio
    ```MYSQL
-   SELECT COUNT(`id`), `office_address`
+   SELECT `office_address`, COUNT(`id`)
    FROM `teachers`
    GROUP BY `office_address`  
    ORDER BY COUNT(`id`);
@@ -65,4 +65,9 @@
    FROM `exam_student`
    GROUP BY `exam_id`;
    ```
-5. Contare quanti corsi di laurea ci sono per ogni dipartimento
+4. Contare quanti corsi di laurea ci sono per ogni dipartimento
+   ```MYSQL
+   SELECT `department_id`, COUNT(`id`)
+   FROM `degrees`
+   GROUP BY `department_id`;
+   ```
