@@ -139,10 +139,15 @@
    ```
 7. BONUS: Selezionare per ogni studente il numero di tentativi sostenuti per ogni esame, stampando anche il voto massimo. Successivamente,filtrare i tentativi con voto minimo 18.
    ```MYSQL
-   SELECT CONCAT(`students`.`name`,' ', `students`.`surname`) as `student_fullname`, `student_id`, COUNT(`student_id`) as `attempts`, MAX(`vote`) as `highest_vote`
+   SELECT `students`.`name`, `students`.`surname`, `student_id`, `courses`.`name` AS `course_name`, COUNT(`exams`.`course_id`) AS `attempts`, MAX(`exam_student`.`vote`) AS highest_vote
    FROM `students`
    INNER JOIN `exam_student`
    ON `students`.`id` = `exam_student`.`student_id`
+   INNER JOIN `exams`
+   ON `exam_student`.`exam_id` = `exams`.`id`
+   INNER JOIN `courses`
+   ON `exams`.`course_id` = `courses`.`id`
    WHERE `vote` >= 18
-   GROUP BY `student_id`;
+   GROUP BY `students`.`name`, `students`.`surname`, `course_name`  , `student_id`
+   ORDER BY `exam_student`.`student_id` ASC;
    ```
