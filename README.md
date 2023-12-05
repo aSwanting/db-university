@@ -50,14 +50,12 @@
    SELECT `enrolment_date`, COUNT(`id`)
    FROM `students`
    GROUP BY `enrolment_date`
-   ORDER BY `enrolment_date` ASC;
    ```
 2. Contare gli insegnanti che hanno l'ufficio nello stesso edificio
    ```MYSQL
    SELECT `office_address`, COUNT(`id`)
    FROM `teachers`
-   GROUP BY `office_address`  
-   ORDER BY COUNT(`id`);
+   GROUP BY `office_address` 
    ```
 3. Calcolare la media dei voti di ogni appello d'esame
    ```MYSQL
