@@ -60,4 +60,9 @@
    ORDER BY COUNT(`id`);
    ```
 3. Calcolare la media dei voti di ogni appello d'esame
-4. Contare quanti corsi di laurea ci sono per ogni dipartimento
+   ```MYSQL
+   SELECT `exam_id`, AVG(`vote`)
+   FROM `exam_student`
+   GROUP BY `exam_id`;
+   ```
+5. Contare quanti corsi di laurea ci sono per ogni dipartimento
