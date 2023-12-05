@@ -143,5 +143,6 @@
    FROM `students`
    INNER JOIN `exam_student`
    ON `students`.`id` = `exam_student`.`student_id`
+   WHERE `vote` >= 18
    GROUP BY `student_id`;
    ```
