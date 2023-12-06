@@ -47,11 +47,11 @@
 
 ### Group
 
-1. Contare quanti iscritti ci sono stati ogni anno
+1. Contare quanti iscritti ci sono stati ogni anno (correzione: mancava YEAR)
    ```MYSQL
-   SELECT `enrolment_date`, COUNT(`id`)
+   SELECT YEAR(`enrolment_date`), COUNT(`id`)
    FROM `students`
-   GROUP BY `enrolment_date`
+   GROUP BY YEAR(`enrolment_date`);
    ```
 2. Contare gli insegnanti che hanno l'ufficio nello stesso edificio
    ```MYSQL
@@ -76,44 +76,47 @@
 
 ### Join
 
-1. Selezionare tutti gli studenti iscritti al Corso di Laurea in Economia
+1. Selezionare tutti gli studenti iscritti al Corso di Laurea in Economia (correction: add degree_name)
    ```MYSQL
-   SELECT * FROM `students`
+   SELECT `students`.*, `degrees`.`name` AS `degree_name`
+   FROM `students`
    INNER JOIN `degrees`
    ON `students`.`degree_id` = `degrees`.`id`
    WHERE `degrees`.`name` = "Corso di Laurea in Economia";
    ```
-2. Selezionare tutti i Corsi di Laurea Magistrale del Dipartimento di Neuroscienze
+2. Selezionare tutti i Corsi di Laurea Magistrale del Dipartimento di Neuroscienze (correction: add department_name)
    ```MYSQL
-   SELECT * FROM `degrees`
+   SELECT `degrees`.*, `departments`.`name` AS `department_name`
+   FROM `degrees`
    INNER JOIN `departments`
    ON `degrees`.`department_id` = `departments`.`id`
    WHERE `degrees`.`level` = "magistrale"
    AND `departments`.`name` LIKE '%neuroscienze';
    ```
-3. Selezionare tutti i corsi in cui insegna Fulvio Amato (id=44)
+3. Selezionare tutti i corsi in cui insegna Fulvio Amato (id=44) (correction: column cleanup)
    ```MYSQL
-   SELECT * FROM `teachers`
+   SELECT `courses`.*, CONCAT(`teachers`.`name`, ' ', `teachers`.`surname`) AS `teacher`, `teachers`.`id` AS `teacher_id`
+   FROM `teachers`
    INNER JOIN `course_teacher`
    ON `teachers`.`id` = `course_teacher`.`teacher_id`
    INNER JOIN `courses`
    ON `course_teacher`.`course_id` = `courses`.`id`
    WHERE `teachers`.`name` = 'fulvio' AND `teachers`.`surname` = 'amato';
    ```
-4. Selezionare tutti gli studenti con i dati relativi al corso di laurea a cui sono iscritti e il relativo dipartimento, in ordine alfabetico per cognome e nome
-
+4. Selezionare tutti gli studenti con i dati relativi al corso di laurea a cui sono iscritti e il relativo dipartimento, in ordine alfabetico per cognome e nome (correction: column cleanup)
    ```MYSQL
-   SELECT * FROM `students`
+   SELECT `students`.`name`,`students`.`surname`,  `degrees`.`name` AS `degree_name`, `degrees`.`level`, `degrees`.`address`, `degrees`.`email`, `degrees`.`website`, `departments`.`name` AS `department_name`
+   FROM `students`
    INNER JOIN `degrees`
    ON `students`.`id` = `degrees`.`id`
    INNER JOIN `departments`
    ON `degrees`.`department_id` = `departments`.`id`
    ORDER BY `students`.`surname` ASC, `students`.`name` ASC;
    ```
-
-5. Selezionare tutti i corsi di laurea con i relativi corsi e insegnanti
+5. Selezionare tutti i corsi di laurea con i relativi corsi e insegnanti (correction: column cleanup)
    ```MYSQL
-   SELECT * FROM `degrees`
+   SELECT `degrees`.`name` AS `degree_name`, `courses`.`name` AS `course_name`, CONCAT(`teachers`.`name`, ' ', `teachers`.`surname`) AS `teacher`
+   FROM `degrees`
    INNER JOIN `courses`
    ON `degrees`.`id` = `courses`.`degree_id`
    INNER JOIN `course_teacher`
@@ -137,7 +140,7 @@
    WHERE `departments`.`name` = 'Dipartimento di Matematica'
    ORDER BY `full_name` ASC;
    ```
-7. BONUS: Selezionare per ogni studente il numero di tentativi sostenuti per ogni esame, stampando anche il voto massimo. Successivamente,filtrare i tentativi con voto minimo 18.
+7. BONUS: Selezionare per ogni studente il numero di tentativi sostenuti per ogni esame, stampando anche il voto massimo. Successivamente, filtrare i TENTATIVI con voto minimo 18.
    ```MYSQL
    SELECT `students`.`name`, `students`.`surname`, `student_id`, `courses`.`name` AS `course_name`, COUNT(`exams`.`course_id`) AS `attempts`, MAX(`exam_student`.`vote`) AS highest_vote
    FROM `students`
@@ -149,5 +152,19 @@
    ON `exams`.`course_id` = `courses`.`id`
    WHERE `vote` >= 18
    GROUP BY `students`.`name`, `students`.`surname`, `course_name`  , `student_id`
+   ORDER BY `exam_student`.`student_id` ASC;
+   ```
+8. BONUS: Selezionare per ogni studente il numero di tentativi sostenuti per ogni esame, stampando anche il voto massimo. Successivamente, filtrare i RISULTATI con voto minimo 18.
+   ```MYSQL
+   SELECT `students`.`name`, `students`.`surname`, `student_id`, `courses`.`name` AS `course_name`, COUNT(`exams`.`course_id`) AS `attempts`, MAX(`exam_student`.`vote`) AS highest_vote
+   FROM `students`
+   INNER JOIN `exam_student`
+   ON `students`.`id` = `exam_student`.`student_id`
+   INNER JOIN `exams`
+   ON `exam_student`.`exam_id` = `exams`.`id`
+   INNER JOIN `courses`
+   ON `exams`.`course_id` = `courses`.`id`
+   GROUP BY `students`.`name`, `students`.`surname`, `course_name`  , `student_id`
+   HAVING(`highest_vote`) >= 18
    ORDER BY `exam_student`.`student_id` ASC;
    ```
